@@ -4,6 +4,7 @@ import { config, createSchema } from '@keystone-next/keystone/schema';
 import { createAuth } from '@keystone-next/auth';
 import { withItemData, statelessSessions } from '@keystone-next/keystone/session';
 import { User } from './schemas/User';
+import { Role } from './schemas/Role';
 import { Product } from './schemas/Product';
 import { OrderItem } from './schemas/OrderItem';
 import { Order } from './schemas/Order';
@@ -12,6 +13,8 @@ import { ProductImage } from './schemas/ProductImage';
 import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
+import { permissionsList } from './schemas/fields';
+
 const databaseUrl = process.env.DATABASE_URL;
 
 const sessionConfig = {
@@ -57,6 +60,7 @@ export default withAuth(config({
     CartItem,
     OrderItem,
     Order,
+    Role,
   }),
   extendGraphqlSchema,
   ui: {
@@ -64,6 +68,6 @@ export default withAuth(config({
     isAccessAllowed: ({ session }) => session,
   },
   session: withItemData(statelessSessions(sessionConfig), {
-    User: 'id name email'
+    User: `id name email role { ${permissionsList.join(' ')} }`
   }),
 }));

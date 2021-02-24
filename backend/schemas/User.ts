@@ -1,10 +1,21 @@
 import { list } from "@keystone-next/keystone/schema";
 import { text, password, relationship } from '@keystone-next/fields';
+import { permissions, rules } from "../access";
 
 export const User = list({
   // access,
   // ui
   fields: {
+    // access: {
+    //   create: () => true,
+    //   read: rules.canManageUsers,
+    //   update: rules.canManageUsers,
+    //   delete: permissions.canManageUsers,
+    // },
+    // ui: {
+    //   hideCreate: args => !permissions.canManageUsers,
+    //   hideDelete: args => !permissions.canManageUsers,
+    // },
     name: text({ isRequired: true }),
     email: text({ isRequired: true, isUnique: true }),
     password: password(),
@@ -17,6 +28,12 @@ export const User = list({
       },
     }),
     orders: relationship({ ref: 'Order.user', many: true }),
-    // add roles
+    role: relationship({
+      ref: 'Role.assignedTo',
+      // access: {
+      //   create.permissions.canManageUsers,
+      //   update.permissions.canManageUsers,
+      // }
+    }),
   },
 });

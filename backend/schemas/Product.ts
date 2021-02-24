@@ -1,9 +1,14 @@
 import { integer, relationship, select, text } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
+import { rules } from '../access';
 
 export const Product = list({
-  // TODO
-  // access
+  access: {
+    create: rules.canManageProducts,
+    read: () => true,
+    update: rules.canManageProducts,
+    delete: rules.canManageProducts,
+  },
   fields: {
     name: text({ isRequired: true }),
     description: text({
